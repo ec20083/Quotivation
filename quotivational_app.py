@@ -1,10 +1,11 @@
+#Quotivation - Back-End Development
+
+
 #Access to the quotes database
 from flask import Flask, jsonify, json, request, make_response, ssl
 import ssl
 
-#with open('quotes.json') as f:
-    #all_motivational_quotes = json.load(f)
-
+#This is our database of quotes
 
 all_motivational_quotes = [
 	{
@@ -78,12 +79,27 @@ def logout():
 def sign_up():
     return "<p>Sign Up</p>"
 
+
+#To allow the application to perform GET, POST and DELETE requests, 
+#a simple dictionary dataset of motivational quotes has been added 
+#to the text file. These requests the main utility currently available
+#to the user.
+
+#Two functions have been specified to serve GET requests. The first 
+#request generates all motivational quotes in the dataset. The second 
+#is more specific, and more efficient in the way it passes the latter 
+#part of the URL as an argument to the function. It returns all the quotes
+#of a specified topic (e.g. 'stress'), where the name of the topic 
+#(denoted as 'topicname') is provided by the user as part of the URL.
+
 #GET method to access quotes
+
 
 @app.route("/motivational_quotes/", methods=['GET'])
 def get_motivational_quotes():
-		return jsonify(all_motivational_quotes), 200
+		return jsonify(all_motivational_quotes), 200	
 
+#GET method to access quotes by topics (4 different topics)
 
 @app.route("/motivational_quotes/quotes_by_topic/<topicname>/", methods=['GET'])
 def get_quotes_by_topic(topicname):
@@ -107,8 +123,9 @@ def create_a_quote():
     return jsonify({'message': 'created: /motivational_quotes/{}'.format(new_quote['topic'])}), 201
 
 
-#curl -i -H "Content-Type: application/json" -X POST -d ’{"topic":[],"quote_series":"Hello"}’ http://35.246.39.23:8880/motivational_quotes
+#this is a POST command sent from a terminal that worked: we have managed to create a new quote and a new topic:
 
+#curl -i -H "Content-Type: application/json" -X POST -d ’{"topic":[],"quote_series":"Hello"}’ http://35.246.39.23:8880/motivational_quotes
 
 
 #DELETE method to delete topics
@@ -120,6 +137,7 @@ def delete_a_topic(topicname):
     return jsonify({'error':'topic name not found!'}), 404 
   all_motivational_quotes.remove(matching_topic[0])
   return jsonify({'success': True})
+
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port = 80, ssl_context=context)
@@ -153,6 +171,33 @@ from flask import Flask, request, make_response
 from functools import wraps
 
 app = Flask(__name__)
+
+
+#Security and Authentication
+
+#Of course, the primary advantage of cloud systems
+#are their tightknit security features, based on 
+#cryptographic principles like hash encryption. 
+#So how have we added a layer of security to our app?
+#The following code implements HTTP Basic Authentication. 
+#The user simply provides a username and password directly 
+#in the HTTP header request: this eliminatest the need to 
+#handshakes or challenge/response processes.
+#Here, username is set to group1 and password is set to 
+#pass1234. If the user enters the incorrect access 
+#redentials, the system returns a 401 error.
+#The main drawback of HTTPS Basic is the lack of 
+#encryption, which makes it vulnerable to Man in the 
+#Middle attacks. This is not a problem for our app at 
+#this early stage of development, as no facilities yet 
+#exist to store users' private data.To further develop 
+#the app's diversity of functions, authorization processes 
+#could be added, in addition to the authentication process 
+#already in place. This would stipulate different access controls 
+#to different types of user; so, for example, authorization could 
+#allow users with registered accounts to access a wider range of 
+#topics in the database, or to publicly comment on quotes.
+
 
 @app.route('/au')
 
