@@ -1,1 +1,3 @@
+#this document contains the modules/packages required 
 Flask
+#pip install pyopenssl - In requirements for HTTPS
